@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "HuijunPractice.h"
 #include "GameFramework/Pawn.h"
+#include "GameFramework/FloatingPawnMovement.h"
 #include "ABPawn.generated.h"
 
 UCLASS()
@@ -26,4 +27,22 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(VisibleAnywhere, Category = Collision)
+		UCapsuleComponent* Capsule; // 충돌체
+	
+	UPROPERTY(VisibleAnywhere, Category = Visual)
+		USkeletalMeshComponent* Mesh; // 매쉬
+
+	UPROPERTY(VisibleAnywhere, Category = Movement)
+		UFloatingPawnMovement* Movement; // 움직임
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+		USpringArmComponent* SpringArm; // 카메라 부착위치
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+		UCameraComponent* Camera; // 카메라
+
+private:
+	void UpDown(float NewAxisValue);
+	void LeftRight(float NewAxisValue); // 
 };
