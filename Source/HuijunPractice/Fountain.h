@@ -41,6 +41,8 @@ public:
 	UPROPERTY(EditAnyWhere, Category=ID) // 언리얼 에디터에서 속성의 데이터를 변경하려면 VisibleAnywhere가 아닌 EditAnyWhere을 사용해야함 
 		//Category = 분류명 규칙으로키워드를 추가하면, 지정한 분류에서 속성값을 관리
 		int32 ID;
+	UPROPERTY(VisibleAnyWhere)
+		URotatingMovementComponent* Movement;
 
 private:
 	UPROPERTY(EditAnyWhere, Category = Stat, Meta = (AllowPrivateAccess = true))
