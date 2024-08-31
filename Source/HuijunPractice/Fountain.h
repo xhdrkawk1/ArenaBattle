@@ -3,6 +3,7 @@
 #pragma once
 
 #include "EngineMinimal.h" 
+#include "GameFramework/RotatingMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Fountain.generated.h"
 
@@ -17,7 +18,9 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void BeginPlay() override; // Postinitialize -> Begin -> End
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame
@@ -38,5 +41,9 @@ public:
 	UPROPERTY(EditAnyWhere, Category=ID) // 언리얼 에디터에서 속성의 데이터를 변경하려면 VisibleAnywhere가 아닌 EditAnyWhere을 사용해야함 
 		//Category = 분류명 규칙으로키워드를 추가하면, 지정한 분류에서 속성값을 관리
 		int32 ID;
+
+private:
+	UPROPERTY(EditAnyWhere, Category = Stat, Meta = (AllowPrivateAccess = true))
+		float RotateSpeed;
 
 };
