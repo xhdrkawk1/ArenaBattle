@@ -36,6 +36,7 @@ AABCharacter::AABCharacter()
 
 	ArmLengthSpeed = 3.f;
 	ArmRotationSpeed = 10.f;
+	GetCharacterMovement()->JumpZVelocity = 800.f;
 
 }
 
@@ -129,6 +130,8 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AABCharacter::LookUp); // 컨트롤러에서 인풋을 처리하면 폰까지 내려오지 않는다.
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AABCharacter::Turn);
+
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 
 }
 
