@@ -3,6 +3,7 @@
 
 #include "ABCharacter.h"
 #include "ABAnimInstance.h"
+#include "ABWeapon.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -47,13 +48,14 @@ AABCharacter::AABCharacter()
 	AttackRadius = 50.f;
 	AttackRange = 200.f;
 
+	CurrentWeapon = nullptr;
 }
 
 // Called when the game starts or when spawned
 void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void AABCharacter::SetControlMode(EControlMode ControlMode)
@@ -327,5 +329,21 @@ void AABCharacter::AttackCheck()
 			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
 		}
 	}
+}
+
+bool AABCharacter::CanSetWeapon()
+{
+	return CurrentWeapon == nullptr;
+}
+
+void AABCharacter::SetWeapon(AABWeapon* NewWeapon)
+{
+	if (!CanSetWeapon() || NewWeapon == nullptr)
+		return;
+
+	FName WeaponSocket(TEXT("hand_rSocket"));
+	NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+	NewWeapon->SetOwner(this);
+	CurrentWeapon = NewWeapon;
 }
 

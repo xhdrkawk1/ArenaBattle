@@ -45,6 +45,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 		USpringArmComponent* SpringArm; // 카메라 부착위치
 
@@ -66,6 +67,10 @@ private:
 	void AttackStartComboState();
 	void AttackEndComboState();
 	void AttackCheck();
+
+public:
+	bool CanSetWeapon();
+	void SetWeapon(class AABWeapon* NewWeapon);
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsAttacking;
@@ -85,4 +90,7 @@ private:
 
 	UPROPERTY()
 		class UABAnimInstance* ABAnim;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		class AABWeapon* CurrentWeapon;
 };
