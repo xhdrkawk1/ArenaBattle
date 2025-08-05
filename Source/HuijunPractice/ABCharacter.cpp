@@ -5,6 +5,9 @@
 #include "ABAnimInstance.h"
 #include "ABWeapon.h"
 #include "DrawDebugHelpers.h"
+#include "ABCharacterStatComponent.h"
+#include "Components/WidgetComponent.h"
+#include "ABCharacterWidget.h"
 
 // Sets default values
 AABCharacter::AABCharacter()
@@ -13,6 +16,8 @@ AABCharacter::AABCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
+	CharacterStat = CreateDefaultSubobject<UABCharacterStatComponent>(TEXT("CHARACTERSTAT"));
+	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	Camera->SetupAttachment(SpringArm);
@@ -20,6 +25,11 @@ AABCharacter::AABCharacter()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.f, 0.0f));
 	SpringArm->TargetArmLength = 400.f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
+
+	HPBarWidget->SetupAttachment(GetMesh());
+
+	HPBarWidget->SetRelativeLocation(FVector(0.f,0.f,180.f));
+	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Cardboard.SK_CharM_Cardboard"));
 	if (SK_CARDBOARD.Succeeded())
@@ -49,12 +59,28 @@ AABCharacter::AABCharacter()
 	AttackRange = 200.f;
 
 	CurrentWeapon = nullptr;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Book/UI/UI_HPBar.UI_HPBar_C"));
+	if (UI_HUD.Succeeded())
+	{
+		HPBarWidget->SetWidgetClass(UI_HUD.Class);
+		HPBarWidget->SetDrawSize(FVector2D(150.f, 50.f));
+	}
+
+
 }
 
 // Called when the game starts or when spawned
 void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	auto CharacterWidget = Cast<UABCharacterWidget>(HPBarWidget->GetUserWidgetObject());
+	if (nullptr != CharacterWidget)
+	{
+		CharacterWidget->BindCharacterStat(CharacterStat);
+	}
 
 }
 
@@ -148,6 +174,14 @@ void AABCharacter::PostInitializeComponents()
 		}
 		});
 
+	CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
+		
+		ABLOG(Warning, TEXT("OnHpisZero"));
+		ABAnim->SetDeadAnim();
+		SetActorEnableCollision(false);
+		
+		});
+
 		ABAnim->OnAttackHitCheck.AddUObject(this, &AABCharacter::AttackCheck);
 }
 
@@ -158,8 +192,7 @@ float AABCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AC
 
 	if (FinalDamage > 0)
 	{
-		ABAnim->SetDeadAnim();
-		SetActorEnableCollision(false);
+		CharacterStat->SetDamage(FinalDamage);
 	}
 	return FinalDamage;
 }
@@ -325,7 +358,7 @@ void AABCharacter::AttackCheck()
 		if (HitResult.Actor.IsValid())
 		{
 			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(50.f, DamageEvent, GetController(), this);
+			HitResult.Actor->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
 			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
 		}
 	}

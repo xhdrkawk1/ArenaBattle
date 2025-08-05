@@ -93,4 +93,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 		class AABWeapon* CurrentWeapon;
+
+	UPROPERTY(VisibleAnywhere, Category = stat)
+		class UABCharacterStatComponent* CharacterStat; 
+	UPROPERTY(VisibleAnywhere, Category = UI)
+		class UWidgetComponent* HPBarWidget;
 };
