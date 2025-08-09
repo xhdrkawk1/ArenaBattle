@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ABCharacter.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 UCLASS()
 class HUIJUNPRACTICE_API AABCharacter : public ACharacter
 {
@@ -22,7 +23,8 @@ protected:
 	enum class EControlMode
 	{
 		GTA,
-		DIABLO
+		DIABLO,
+		NPC
 	};
 
 	void SetControlMode(EControlMode ControlMode);
@@ -40,6 +42,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void PossessedBy(AController* NewController) override;
 
 
 	// Called to bind functionality to input
@@ -59,7 +62,9 @@ private:
 	void Turn(float NewAxisValue);
 
 	void ViewChange();
+public:
 	void Attack();
+	FOnAttackEndDelegate OnAttackEnd;
 
 	UFUNCTION()
 		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
