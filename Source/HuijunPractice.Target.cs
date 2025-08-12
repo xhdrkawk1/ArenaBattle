@@ -9,6 +9,6 @@ public class HuijunPracticeTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("HuijunPractice");
+		ExtraModuleNames.AddRange(new string[] { "HuijunPractice", "ArenaBattleSetting" });
 	}
 }

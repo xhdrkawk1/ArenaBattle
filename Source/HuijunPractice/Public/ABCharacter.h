@@ -62,6 +62,8 @@ private:
 	void Turn(float NewAxisValue);
 
 	void ViewChange();
+
+	void OnAssetLoadCompleted();
 public:
 	void Attack();
 	FOnAttackEndDelegate OnAttackEnd;
@@ -103,4 +105,7 @@ private:
 		class UABCharacterStatComponent* CharacterStat; 
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HPBarWidget;
+
+	FSoftObjectPath CharacterAssetToLoad = FSoftObjectPath(nullptr);
+	TSharedPtr<struct FStreamableHandle> AssetStremingHandle;
 };

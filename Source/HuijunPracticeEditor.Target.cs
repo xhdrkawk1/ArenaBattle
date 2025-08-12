@@ -9,6 +9,6 @@ public class HuijunPracticeEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("HuijunPractice");
+		ExtraModuleNames.AddRange( new string[] { "HuijunPractice", "ArenaBattleSetting" });
 	}
 }
